@@ -14,6 +14,7 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -21,22 +22,24 @@
                         display: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        'surface-100': '#121418', // Fundo profundo
-                        'surface-200': '#1e2025', // Cards
-                        'surface-300': '#2b2d35', // Elevações
-                        'primary': '#d0bcff', // Material You Primary (Light Purple)
-                        'primary-dark': '#9a82db',
-                        'on-primary': '#381e72', // Texto escuro sobre primária
-                        'secondary-container': '#4a4458',
-                        'on-secondary-container': '#e8def8',
-                        'accent': '#f2b8b5', // Rosa suave
+                        'surface-100': 'rgb(var(--surface-100) / <alpha-value>)',
+                        'surface-200': 'rgb(var(--surface-200) / <alpha-value>)',
+                        'surface-300': 'rgb(var(--surface-300) / <alpha-value>)',
+                        'primary': 'rgb(var(--primary) / <alpha-value>)',
+                        'primary-dark': 'rgb(var(--primary-dark) / <alpha-value>)',
+                        'on-primary': 'rgb(var(--on-primary) / <alpha-value>)',
+                        'secondary-container': 'rgb(var(--secondary-container) / <alpha-value>)',
+                        'on-secondary-container': 'rgb(var(--on-secondary-container) / <alpha-value>)',
+                        'accent': 'rgb(var(--accent) / <alpha-value>)',
+                        'text-main': 'rgb(var(--text-main) / <alpha-value>)',
+                        'text-sub': 'rgb(var(--text-sub) / <alpha-value>)',
                     },
                     borderRadius: {
                         '4xl': '2rem',
                         '5xl': '2.5rem',
                     },
                     boxShadow: {
-                        'glow': '0 0 20px rgba(208, 188, 255, 0.15)',
+                        'glow': '0 0 20px rgba(var(--primary), 0.15)',
                     }
                 }
             }
@@ -44,11 +47,42 @@
     </script>
 
     <style>
+        :root {
+            /* Light Mode Defaults */
+            --surface-100: 253 252 255;
+            --surface-200: 243 241 246;
+            --surface-300: 231 224 236;
+            --primary: 103 80 164;
+            --primary-dark: 79 55 139;
+            --on-primary: 255 255 255;
+            --secondary-container: 232 222 248;
+            --on-secondary-container: 29 25 43;
+            --accent: 140 74 96;
+            --text-main: 28 27 31;
+            --text-sub: 73 69 79;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Defaults */
+            --surface-100: 18 20 24;
+            --surface-200: 30 32 37;
+            --surface-300: 43 45 53;
+            --primary: 208 188 255;
+            --primary-dark: 154 130 219;
+            --on-primary: 56 30 114;
+            --secondary-container: 74 68 88;
+            --on-secondary-container: 232 222 248;
+            --accent: 242 184 181;
+            --text-main: 230 225 229;
+            --text-sub: 202 196 208;
+        }
+
         body {
-            background-color: #121418;
-            color: #e6e1e5;
+            background-color: rgb(var(--surface-100));
+            color: rgb(var(--text-main));
             -webkit-tap-highlight-color: transparent;
-            padding-bottom: 80px; /* Espaço para a bottom bar no mobile */
+            padding-bottom: 80px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Ocultar scrollbar */
@@ -56,14 +90,14 @@
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #121418;
+            background: rgb(var(--surface-100));
         }
         ::-webkit-scrollbar-thumb {
-            background: #2b2d35;
+            background: rgb(var(--surface-300));
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #4a4458;
+            background: rgb(var(--secondary-container));
         }
 
         /* RIPPLE EFFECT (Onda ao clicar) */
@@ -126,19 +160,33 @@
 
     <!-- Navbar Desktop (Topo) -->
     <nav class="hidden md:flex fixed w-full z-50 top-0 p-6 transition-all duration-300" id="desktop-nav">
-        <div class="glass w-full max-w-7xl mx-auto bg-surface-200/80 backdrop-blur-xl rounded-full px-8 py-4 flex justify-between items-center shadow-lg border border-white/5">
+        <div class="glass w-full max-w-7xl mx-auto bg-surface-200/80 backdrop-blur-xl rounded-full px-8 py-4 flex justify-between items-center shadow-lg border border-text-main/5">
             <a href="#" class="font-display font-bold text-2xl tracking-tight flex items-center gap-3">
                 <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-glow">
                     <i data-lucide="layers" class="w-6 h-6"></i>
                 </div>
                 DKApps™
             </a>
-            <div class="flex items-center gap-10">
-                <a href="#home" class="text-sm font-medium hover:text-primary transition-colors">Início</a>
-                <a href="#apps" class="text-sm font-medium hover:text-primary transition-colors">Apps</a>
-                <a href="#dksocial" class="text-sm font-medium hover:text-primary transition-colors">DKSocial</a>
-                <a href="#about" class="text-sm font-medium hover:text-primary transition-colors">Sobre</a>
-                <button class="ripple-container bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm hover:brightness-110 transition-all shadow-glow">
+            <div class="flex items-center gap-6 md:gap-10">
+                <a href="#home" data-i18n="nav_home" class="text-sm font-medium hover:text-primary transition-colors">Início</a>
+                <a href="#apps" data-i18n="nav_apps" class="text-sm font-medium hover:text-primary transition-colors">Apps</a>
+                <a href="#dksocial" data-i18n="nav_social" class="text-sm font-medium hover:text-primary transition-colors">DKSocial</a>
+                <a href="#about" data-i18n="nav_about" class="text-sm font-medium hover:text-primary transition-colors">Sobre</a>
+
+                <div class="flex items-center gap-2">
+                    <!-- Language Toggle Desktop -->
+                    <button id="lang-toggle" class="text-sm font-bold text-text-sub hover:text-primary transition-colors">EN</button>
+
+                    <div class="w-px h-4 bg-text-sub/20"></div>
+
+                    <!-- Theme Toggle Desktop -->
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-surface-300 transition-colors" aria-label="Toggle Theme">
+                        <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+                        <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                    </button>
+                </div>
+
+                <button class="ripple-container bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm hover:brightness-110 transition-all shadow-glow" data-i18n="nav_console">
                     Acessar Console
                 </button>
             </div>
@@ -154,24 +202,24 @@
     <!-- Hero Section -->
     <section id="home" class="min-h-screen flex flex-col justify-center items-center px-6 pt-20 md:pt-0 relative">
         <div class="text-center max-w-4xl mx-auto z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-200 border border-white/5 text-primary text-sm font-medium mb-8 reveal hover:bg-surface-300 transition-colors cursor-default ripple-container">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-200 border border-text-main/5 text-primary text-sm font-medium mb-8 reveal hover:bg-surface-300 transition-colors cursor-default ripple-container">
                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                Novo: KLauncher v2.0 Disponível
+                <span data-i18n="hero_new">Novo: KLauncher v2.0 Disponível</span>
             </div>
             
             <h1 class="font-display text-5xl md:text-8xl font-bold leading-tight mb-8 reveal delay-100">
-                Criando o <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Inimaginável</span>
+                <span data-i18n="hero_title_1">Criando o </span><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent" data-i18n="hero_title_2">Inimaginável</span>
             </h1>
             
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 reveal delay-200 leading-relaxed">
+            <p class="text-text-sub text-lg md:text-xl max-w-2xl mx-auto mb-12 reveal delay-200 leading-relaxed" data-i18n="hero_desc">
                 DKApps é o lar do <strong>Yoky</strong>, <strong>KLauncher</strong> e da revolução <strong>DKSocial</strong>. Design Material You em cada pixel.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal delay-300">
-                <button onclick="document.getElementById('apps').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-primary text-on-primary h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform">
+                <button onclick="document.getElementById('apps').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-primary text-on-primary h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform" data-i18n="btn_projects">
                     <i data-lucide="grid"></i> Ver Projetos
                 </button>
-                <button onclick="document.getElementById('dksocial').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-surface-300 text-white h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:bg-surface-200 transition-colors">
+                <button onclick="document.getElementById('dksocial').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-surface-300 text-text-main h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:bg-surface-200 transition-colors" data-i18n="btn_demo">
                     <i data-lucide="play-circle"></i> Demo DKSocial
                 </button>
             </div>
@@ -183,14 +231,14 @@
         <div class="container mx-auto max-w-6xl">
             <div class="flex items-end justify-between mb-16 reveal">
                 <div>
-                    <h2 class="font-display text-4xl font-bold mb-2">Ecossistema</h2>
-                    <p class="text-gray-400">Ferramentas potencializadas por IA e Design.</p>
+                    <h2 class="font-display text-4xl font-bold mb-2" data-i18n="sec_eco_title">Ecossistema</h2>
+                    <p class="text-text-sub" data-i18n="sec_eco_desc">Ferramentas potencializadas por IA e Design.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Card Yoky -->
-                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-white/5 hover:border-primary/50 relative overflow-hidden cursor-pointer h-full">
+                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-text-main/5 hover:border-primary/50 relative overflow-hidden cursor-pointer h-full">
                     <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <div class="tilt-content relative z-10 flex flex-col h-full">
@@ -201,24 +249,24 @@
                             <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20">GROQ + GPT OSS</span>
                         </div>
                         
-                        <h3 class="font-display text-3xl font-bold mb-4">Yoky Bot</h3>
-                        <p class="text-gray-400 mb-8 flex-grow">
+                        <h3 class="font-display text-3xl font-bold mb-4" data-i18n="card_yoky_title">Yoky Bot</h3>
+                        <p class="text-text-sub mb-8 flex-grow" data-i18n="card_yoky_desc">
                             O assistente de Discord definitivo. Respostas instantâneas via Groq LPU, moderação automática e personalidade adaptável.
                         </p>
 
                         <div class="flex items-center gap-4 mt-auto">
                             <a href="https://discord.com/oauth2/authorize?client_id=1362065515303927928"
-   class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all no-underline">
+   class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all no-underline" data-i18n="btn_add">
     Adicionar
     <i data-lucide="plus" class="w-4 h-4"></i>
 </a>
-                            <a href="alert("nao tem");" class="text-sm font-medium hover:text-white transition-colors">Documentação</a>
+                            <a href="alert("nao tem");" class="text-sm font-medium hover:text-text-main transition-colors" data-i18n="btn_docs">Documentação</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Card KLauncher -->
-                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-white/5 hover:border-accent/50 relative overflow-hidden cursor-pointer h-full">
+                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-text-main/5 hover:border-accent/50 relative overflow-hidden cursor-pointer h-full">
                     <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     <div class="tilt-content relative z-10 flex flex-col h-full">
@@ -229,16 +277,16 @@
                             <span class="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full border border-accent/20">WINDOWS</span>
                         </div>
                         
-                        <h3 class="font-display text-3xl font-bold mb-4">KLauncher</h3>
-                        <p class="text-gray-400 mb-8 flex-grow">
+                        <h3 class="font-display text-3xl font-bold mb-4" data-i18n="card_klauncher_title">KLauncher</h3>
+                        <p class="text-text-sub mb-8 flex-grow" data-i18n="card_klauncher_desc">
                             Transforme seu Windows com a estética Material You. Cores dinâmicas extraídas do wallpaper, widgets flutuantes e menu iniciar reinventado.
                         </p>
 
                         <div class="flex items-center gap-4 mt-auto">
-                            <button class="bg-accent text-surface-100 px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all">
+                            <button class="bg-accent text-surface-100 px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all" data-i18n="btn_download">
                                 Download <i data-lucide="download" class="w-4 h-4"></i>
                             </button>
-                            <span class="text-xs text-gray-500">v2.1.0 Stable</span>
+                            <span class="text-xs text-text-sub">v2.1.0 Stable</span>
                         </div>
                     </div>
                 </div>
@@ -252,7 +300,7 @@
         <div class="absolute right-0 top-1/4 w-[800px] h-[800px] bg-gradient-to-b from-primary/10 to-transparent rounded-full blur-3xl -z-10"></div>
 
         <div class="container mx-auto px-6">
-            <div class="bg-gradient-to-r from-surface-200 to-surface-300 rounded-[3rem] p-1 border border-white/5 shadow-2xl reveal">
+            <div class="bg-gradient-to-r from-surface-200 to-surface-300 rounded-[3rem] p-1 border border-text-main/5 shadow-2xl reveal">
                 <div class="bg-surface-100/50 backdrop-blur-sm rounded-[2.8rem] overflow-hidden flex flex-col lg:flex-row">
                     
                     <!-- Content -->
@@ -265,22 +313,22 @@
                         </div>
 
                         <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                            Vídeos curtos.<br>
-                            <span class="text-primary">Conexões reais.</span>
+                            <span data-i18n="sec_social_title_1">Vídeos curtos.</span><br>
+                            <span class="text-primary" data-i18n="sec_social_title_2">Conexões reais.</span>
                         </h2>
-                        <p class="text-gray-400 text-lg mb-8">
+                        <p class="text-text-sub text-lg mb-8" data-i18n="sec_social_desc">
                             A rede social central do ecossistema. Feed limpo, sem algoritmos viciantes, focado em criadores.
                         </p>
 
                         <div class="flex gap-4">
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-white">100+</div>
-                                <div class="text-xs text-gray-500 uppercase tracking-wide">Users</div>
+                                <div class="text-2xl font-bold text-text-main">100+</div>
+                                <div class="text-xs text-text-sub uppercase tracking-wide">Users</div>
                             </div>
-                            <div class="w-px bg-white/10"></div>
+                            <div class="w-px bg-text-main/10"></div>
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-white">Multi</div>
-                                <div class="text-xs text-gray-500 uppercase tracking-wide">Plat</div>
+                                <div class="text-2xl font-bold text-text-main">Multi</div>
+                                <div class="text-xs text-text-sub uppercase tracking-wide">Plat</div>
                             </div>
                         </div>
                     </div>
@@ -294,7 +342,7 @@
                         <div class="relative w-64 aspect-[9/18] border-4 border-surface-300 rounded-[2rem] shadow-2xl overflow-hidden bg-black">
                             <!-- Video Content Simulate -->
                             <div class="absolute inset-0 bg-gray-800 flex items-center justify-center">
-                                <i data-lucide="play" class="w-12 h-12 text-white/50 fill-white"></i>
+                                <i data-lucide="play" class="w-12 h-12 text-text-main/50 fill-text-main"></i>
                             </div>
                             
                             <!-- Overlay UI -->
@@ -305,10 +353,10 @@
                                 </div>
                                 <div class="flex justify-between items-center mt-4">
                                     <div class="flex gap-3">
-                                        <i id="like-icon" data-lucide="heart" class="w-6 h-6 text-white transition-colors"></i>
-                                        <i data-lucide="message-circle" class="w-6 h-6 text-white"></i>
+                                        <i id="like-icon" data-lucide="heart" class="w-6 h-6 text-text-main transition-colors"></i>
+                                        <i data-lucide="message-circle" class="w-6 h-6 text-text-main"></i>
                                     </div>
-                                    <i data-lucide="share-2" class="w-6 h-6 text-white"></i>
+                                    <i data-lucide="share-2" class="w-6 h-6 text-text-main"></i>
                                 </div>
                             </div>
                             
@@ -316,7 +364,7 @@
                             <i id="big-heart" data-lucide="heart" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-0 h-0 text-red-500 fill-red-500 transition-all duration-300"></i>
                         </div>
                         
-                        <div class="absolute bottom-8 text-sm text-gray-400 animate-bounce">
+                        <div class="absolute bottom-8 text-sm text-text-sub animate-bounce" data-i18n="mockup_hint">
                             Toque para interagir
                         </div>
                     </div>
@@ -325,48 +373,105 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="py-20 px-6 text-center">
-        <h2 class="font-display text-3xl font-bold mb-8">Construído com Tecnologia Moderna</h2>
-        <div class="flex flex-wrap justify-center gap-4 opacity-70">
-            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Tailwind CSS</span>
-            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Groq AI</span>
-            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Electron</span>
-            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Node.js</span>
-            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Material Design 3</span>
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-6 relative">
+        <div class="container mx-auto max-w-4xl">
+            <div class="bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-text-main/5 shadow-2xl reveal">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-4xl font-bold mb-4" data-i18n="contact_title">Entre em Contato</h2>
+                    <p class="text-text-sub text-lg" data-i18n="contact_desc">Tem uma ideia? Vamos construir juntos.</p>
+                </div>
+
+                <form class="space-y-6" onsubmit="event.preventDefault(); alert('Mensagem enviada! (Demo)');">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="relative group">
+                            <input type="text" id="name" required
+                                class="peer w-full bg-surface-300 rounded-2xl px-6 py-4 outline-none border-2 border-transparent focus:border-primary transition-all placeholder-transparent text-text-main">
+                            <label for="name" class="absolute left-6 top-4 text-text-sub text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-xs peer-focus:text-primary pointer-events-none" data-i18n="lbl_name">
+                                Nome
+                            </label>
+                        </div>
+                        <div class="relative group">
+                            <input type="email" id="email" required
+                                class="peer w-full bg-surface-300 rounded-2xl px-6 py-4 outline-none border-2 border-transparent focus:border-primary transition-all placeholder-transparent text-text-main">
+                            <label for="email" class="absolute left-6 top-4 text-text-sub text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-xs peer-focus:text-primary pointer-events-none" data-i18n="lbl_email">
+                                Email
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <textarea id="message" rows="4" required
+                            class="peer w-full bg-surface-300 rounded-2xl px-6 py-4 outline-none border-2 border-transparent focus:border-primary transition-all placeholder-transparent text-text-main resize-none"></textarea>
+                        <label for="message" class="absolute left-6 top-4 text-text-sub text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1 peer-focus:text-xs peer-focus:text-primary pointer-events-none" data-i18n="lbl_message">
+                            Mensagem
+                        </label>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="ripple-container bg-primary text-on-primary px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 hover:scale-105 transition-transform shadow-glow w-full md:w-auto justify-center">
+                            <span data-i18n="btn_send">Enviar Mensagem</span>
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 text-center">
+        <h2 class="font-display text-3xl font-bold mb-8" data-i18n="sec_about_title">Construído com Tecnologia Moderna</h2>
+        <div class="flex flex-wrap justify-center gap-4 opacity-70">
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-text-main/5 text-sm">Tailwind CSS</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-text-main/5 text-sm">Groq AI</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-text-main/5 text-sm">Electron</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-text-main/5 text-sm">Node.js</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-text-main/5 text-sm">Material Design 3</span>
+        </div>
+    </section>
+
+    <!-- Mobile Controls (Floating) -->
+    <div class="md:hidden fixed top-6 right-6 z-50 flex flex-col gap-3">
+        <button id="mobile-lang-toggle" class="p-3 rounded-full bg-surface-200/80 backdrop-blur-xl border border-text-main/5 shadow-lg text-text-main font-bold text-xs" aria-label="Toggle Language">
+            EN
+        </button>
+        <button id="mobile-theme-toggle" class="p-3 rounded-full bg-surface-200/80 backdrop-blur-xl border border-text-main/5 shadow-lg text-text-main" aria-label="Toggle Theme">
+            <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+            <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+        </button>
+    </div>
+
     <!-- Bottom Navigation Bar (Material You Mobile) -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-surface-200/95 backdrop-blur-xl border-t border-white/5 z-50 pb-safe">
+    <nav class="md:hidden fixed bottom-0 w-full bg-surface-200/95 backdrop-blur-xl border-t border-text-main/5 z-50 pb-safe">
         <div class="flex justify-around items-center h-20 px-2">
             
             <a href="#home" class="nav-item active flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
                 <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
                     <i data-lucide="home" class="w-5 h-5 min-w-[20px]"></i>
                 </div>
-                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Início</span>
+                <span class="text-[10px] font-medium text-text-sub group-[.active]:text-text-main transition-colors" data-i18n="nav_home">Início</span>
             </a>
 
             <a href="#apps" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
                 <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
                     <i data-lucide="grid" class="w-5 h-5 min-w-[20px]"></i>
                 </div>
-                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Apps</span>
+                <span class="text-[10px] font-medium text-text-sub group-[.active]:text-text-main transition-colors" data-i18n="nav_apps">Apps</span>
             </a>
 
             <a href="#dksocial" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
                 <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
                     <i data-lucide="heart" class="w-5 h-5 min-w-[20px]"></i>
                 </div>
-                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Social</span>
+                <span class="text-[10px] font-medium text-text-sub group-[.active]:text-text-main transition-colors" data-i18n="nav_social">Social</span>
             </a>
 
             <a href="#about" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
                 <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
                     <i data-lucide="info" class="w-5 h-5 min-w-[20px]"></i>
                 </div>
-                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Sobre</span>
+                <span class="text-[10px] font-medium text-text-sub group-[.active]:text-text-main transition-colors" data-i18n="nav_about">Sobre</span>
             </a>
 
         </div>
@@ -376,6 +481,184 @@
     <div class="h-20 md:hidden"></div>
 
     <script>
+        // 0. THEME & LANGUAGE LOGIC
+        const translations = {
+            'pt-BR': {
+                'nav_home': 'Início',
+                'nav_apps': 'Apps',
+                'nav_social': 'DKSocial',
+                'nav_about': 'Sobre',
+                'nav_console': 'Acessar Console',
+                'hero_new': 'Novo: KLauncher v2.0 Disponível',
+                'hero_title_1': 'Criando o ',
+                'hero_title_2': 'Inimaginável',
+                'hero_desc': 'DKApps é o lar do <strong>Yoky</strong>, <strong>KLauncher</strong> e da revolução <strong>DKSocial</strong>. Design Material You em cada pixel.',
+                'btn_projects': 'Ver Projetos',
+                'btn_demo': 'Demo DKSocial',
+                'sec_eco_title': 'Ecossistema',
+                'sec_eco_desc': 'Ferramentas potencializadas por IA e Design.',
+                'card_yoky_title': 'Yoky Bot',
+                'card_yoky_desc': 'O assistente de Discord definitivo. Respostas instantâneas via Groq LPU, moderação automática e personalidade adaptável.',
+                'btn_add': 'Adicionar',
+                'btn_docs': 'Documentação',
+                'card_klauncher_title': 'KLauncher',
+                'card_klauncher_desc': 'Transforme seu Windows com a estética Material You. Cores dinâmicas extraídas do wallpaper, widgets flutuantes e menu iniciar reinventado.',
+                'btn_download': 'Download',
+                'sec_social_title_1': 'Vídeos curtos.',
+                'sec_social_title_2': 'Conexões reais.',
+                'sec_social_desc': 'A rede social central do ecossistema. Feed limpo, sem algoritmos viciantes, focado em criadores.',
+                'mockup_hint': 'Toque para interagir',
+                'sec_about_title': 'Construído com Tecnologia Moderna',
+                'contact_title': 'Entre em Contato',
+                'contact_desc': 'Tem uma ideia? Vamos construir juntos.',
+                'lbl_name': 'Nome',
+                'lbl_email': 'Email',
+                'lbl_message': 'Mensagem',
+                'btn_send': 'Enviar Mensagem'
+            },
+            'en': {
+                'nav_home': 'Home',
+                'nav_apps': 'Apps',
+                'nav_social': 'DKSocial',
+                'nav_about': 'About',
+                'nav_console': 'Access Console',
+                'hero_new': 'New: KLauncher v2.0 Available',
+                'hero_title_1': 'Creating the ',
+                'hero_title_2': 'Unimaginable',
+                'hero_desc': 'DKApps is home to <strong>Yoky</strong>, <strong>KLauncher</strong> and the <strong>DKSocial</strong> revolution. Material You design in every pixel.',
+                'btn_projects': 'View Projects',
+                'btn_demo': 'DKSocial Demo',
+                'sec_eco_title': 'Ecosystem',
+                'sec_eco_desc': 'Tools powered by AI and Design.',
+                'card_yoky_title': 'Yoky Bot',
+                'card_yoky_desc': 'The ultimate Discord assistant. Instant answers via Groq LPU, auto-moderation, and adaptive personality.',
+                'btn_add': 'Add',
+                'btn_docs': 'Documentation',
+                'card_klauncher_title': 'KLauncher',
+                'card_klauncher_desc': 'Transform your Windows with Material You aesthetics. Dynamic colors from wallpaper, floating widgets, and reimagined start menu.',
+                'btn_download': 'Download',
+                'sec_social_title_1': 'Short videos.',
+                'sec_social_title_2': 'Real connections.',
+                'sec_social_desc': 'The central social network of the ecosystem. Clean feed, no addictive algorithms, creator-focused.',
+                'mockup_hint': 'Tap to interact',
+                'sec_about_title': 'Built with Modern Tech',
+                'contact_title': 'Get in Touch',
+                'contact_desc': 'Have an idea? Let\'s build together.',
+                'lbl_name': 'Name',
+                'lbl_email': 'Email',
+                'lbl_message': 'Message',
+                'btn_send': 'Send Message'
+            }
+        };
+
+        function updateLanguage(lang) {
+            document.documentElement.lang = lang;
+            const elements = document.querySelectorAll('[data-i18n]');
+
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    // Check if it's an input placeholder
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else if (key === 'hero_desc') {
+                        el.innerHTML = translations[lang][key]; // Allow HTML for hero desc
+                    } else {
+                        // Check if element has child nodes that we shouldn't overwrite (like icons)
+                        // This simple check assumes text is the first child or we are replacing just text
+                        // For buttons with icons, we might need to be specific.
+                        // Let's safe-guard: if element has children, try to find a text node or just span?
+                        // Simplest: Just wrap text in spans in HTML if needed.
+                        // For now, let's see. 'Ver Projetos <i...>'
+                        // If we overwrite innerHTML we lose the icon.
+
+                        const icon = el.querySelector('i');
+                        if (icon) {
+                            // If there is an icon, we assume text is separate.
+                            // Let's reconstruct.
+                            const text = translations[lang][key];
+                            // Remove existing text nodes?
+                            // This is getting complex. Better to wrap text in <span> in HTML.
+                            // But for now, let's just append the icon back if it existed? No, order matters.
+
+                            // Hacky fix: clone icon, clear, add text, add icon (or vice versa).
+                            // A better way for this project:
+                            // Update the HTML structure to isolate text in <span> with data-i18n.
+                            // I will do that in the next step if I see issues.
+                            // Actually, let's look at the button: <i ...></i> Ver Projetos
+                            // or Ver Projetos <i ...></i>
+
+                            // Let's just update the text node.
+                            let textNode = null;
+                            el.childNodes.forEach(node => {
+                                if (node.nodeType === 3 && node.nodeValue.trim() !== '') {
+                                    textNode = node;
+                                }
+                            });
+
+                            if (textNode) {
+                                textNode.nodeValue = " " + translations[lang][key] + " "; // Add spacing
+                            } else {
+                                // Fallback
+                                // el.innerText = translations[lang][key];
+                            }
+                        } else {
+                             el.innerHTML = translations[lang][key];
+                        }
+                    }
+                }
+            });
+
+            // Update Toggle Button Text
+            const toggleBtn = document.getElementById('lang-toggle');
+            const mobileToggleBtn = document.getElementById('mobile-lang-toggle');
+            const nextLang = lang === 'pt-BR' ? 'EN' : 'PT';
+
+            if(toggleBtn) toggleBtn.textContent = nextLang;
+            if(mobileToggleBtn) mobileToggleBtn.textContent = nextLang;
+        }
+
+        function toggleLanguage() {
+            const currentLang = document.documentElement.lang;
+            const newLang = currentLang === 'pt-BR' ? 'en' : 'pt-BR';
+            localStorage.setItem('lang', newLang);
+            updateLanguage(newLang);
+        }
+
+        function initThemeAndLang() {
+            // Theme
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const theme = savedTheme || systemTheme;
+
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+
+            // Language
+            const savedLang = localStorage.getItem('lang') || 'pt-BR';
+            updateLanguage(savedLang);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            if (newTheme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
+
+        document.getElementById('lang-toggle')?.addEventListener('click', toggleLanguage);
+        document.getElementById('mobile-lang-toggle')?.addEventListener('click', toggleLanguage);
+
+        initThemeAndLang();
+
         // Inicializar ícones
         lucide.createIcons();
 
@@ -490,9 +773,9 @@
             // Toggle colors
             if (likeIcon.classList.contains('text-red-500')) {
                 likeIcon.classList.remove('text-red-500', 'fill-red-500');
-                likeIcon.classList.add('text-white');
+                likeIcon.classList.add('text-text-main');
             } else {
-                likeIcon.classList.remove('text-white');
+                likeIcon.classList.remove('text-text-main');
                 likeIcon.classList.add('text-red-500', 'fill-red-500');
                 
                 // Animate big heart
