@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DKApps™ | Material You Experience</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        'surface-100': '#121418', // Fundo profundo
+                        'surface-200': '#1e2025', // Cards
+                        'surface-300': '#2b2d35', // Elevações
+                        'primary': '#d0bcff', // Material You Primary (Light Purple)
+                        'primary-dark': '#9a82db',
+                        'on-primary': '#381e72', // Texto escuro sobre primária
+                        'secondary-container': '#4a4458',
+                        'on-secondary-container': '#e8def8',
+                        'accent': '#f2b8b5', // Rosa suave
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '2.5rem',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(208, 188, 255, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #121418;
+            color: #e6e1e5;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 80px; /* Espaço para a bottom bar no mobile */
+        }
+
+        /* Ocultar scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121418;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b2d35;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a4458;
+        }
+
+        /* RIPPLE EFFECT (Onda ao clicar) */
+        .ripple-container {
+            position: relative;
+            overflow: hidden;
+            transform: translate3d(0, 0, 0);
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple-anim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Animações de entrada */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3D Tilt Effect CSS base */
+        .tilt-card {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+        .tilt-content {
+            transform: translateZ(20px);
+        }
+
+        /* Bottom Navigation Active State */
+        .nav-item.active .nav-indicator {
+            width: 64px;
+            background-color: #4a4458; /* Secondary Container */
+            color: #e8def8; /* On Secondary Container */
+        }
+        .nav-item.active i {
+            color: #e8def8;
+        }
+        /* Mobile adjustment for bottom padding */
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-on-primary overflow-x-hidden">
+
+    <!-- Navbar Desktop (Topo) -->
+    <nav class="hidden md:flex fixed w-full z-50 top-0 p-6 transition-all duration-300" id="desktop-nav">
+        <div class="glass w-full max-w-7xl mx-auto bg-surface-200/80 backdrop-blur-xl rounded-full px-8 py-4 flex justify-between items-center shadow-lg border border-white/5">
+            <a href="#" class="font-display font-bold text-2xl tracking-tight flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary shadow-glow">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                DKApps™
+            </a>
+            <div class="flex items-center gap-10">
+                <a href="#home" class="text-sm font-medium hover:text-primary transition-colors">Início</a>
+                <a href="#apps" class="text-sm font-medium hover:text-primary transition-colors">Apps</a>
+                <a href="#dksocial" class="text-sm font-medium hover:text-primary transition-colors">DKSocial</a>
+                <a href="#about" class="text-sm font-medium hover:text-primary transition-colors">Sobre</a>
+                <button class="ripple-container bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm hover:brightness-110 transition-all shadow-glow">
+                    Acessar Console
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Mobile (Apenas Logo) -->
+    <header class="md:hidden fixed top-0 w-full bg-surface-100/90 backdrop-blur-md z-40 px-6 py-4 border-b border-white/5 flex justify-between items-center">
+        <div class="font-display font-bold text-xl flex items-center gap-2">
+            <i data-lucide="layers" class="text-primary"></i> DKApps™
+        </div>
+        <div class="w-8 h-8 rounded-full bg-surface-300 flex items-center justify-center">
+            <i data-lucide="user" class="w-4 h-4"></i>
+        </div>
+    </header>
+
+    <!-- Fundo Animado (Parallax) -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div id="blob1" class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] transition-transform duration-[2000ms]"></div>
+        <div id="blob2" class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary-dark/10 rounded-full blur-[120px] transition-transform duration-[2000ms]"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex flex-col justify-center items-center px-6 pt-20 md:pt-0 relative">
+        <div class="text-center max-w-4xl mx-auto z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-200 border border-white/5 text-primary text-sm font-medium mb-8 reveal hover:bg-surface-300 transition-colors cursor-default ripple-container">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                Novo: KLauncher v2.0 Disponível
+            </div>
+            
+            <h1 class="font-display text-5xl md:text-8xl font-bold leading-tight mb-8 reveal delay-100">
+                Criando o <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Inimaginável</span>
+            </h1>
+            
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 reveal delay-200 leading-relaxed">
+                DKApps é o lar do <strong>Yoky</strong>, <strong>KLauncher</strong> e da revolução <strong>DKSocial</strong>. Design Material You em cada pixel.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal delay-300">
+                <button onclick="document.getElementById('apps').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-primary text-on-primary h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform">
+                    <i data-lucide="grid"></i> Ver Projetos
+                </button>
+                <button onclick="document.getElementById('dksocial').scrollIntoView()" class="ripple-container w-full sm:w-auto bg-surface-300 text-white h-14 px-8 rounded-full font-bold text-lg flex items-center justify-center gap-2 hover:bg-surface-200 transition-colors">
+                    <i data-lucide="play-circle"></i> Demo DKSocial
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apps Section (Grid Interativo) -->
+    <section id="apps" class="py-24 px-6 relative">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex items-end justify-between mb-16 reveal">
+                <div>
+                    <h2 class="font-display text-4xl font-bold mb-2">Ecossistema</h2>
+                    <p class="text-gray-400">Ferramentas potencializadas por IA e Design.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card Yoky -->
+                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-white/5 hover:border-primary/50 relative overflow-hidden cursor-pointer h-full">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="tilt-content relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-8">
+                            <div class="w-16 h-16 bg-surface-300 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                <i data-lucide="bot" class="w-8 h-8"></i>
+                            </div>
+                            <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20">GROQ + GPT OSS</span>
+                        </div>
+                        
+                        <h3 class="font-display text-3xl font-bold mb-4">Yoky Bot</h3>
+                        <p class="text-gray-400 mb-8 flex-grow">
+                            O assistente de Discord definitivo. Respostas instantâneas via Groq LPU, moderação automática e personalidade adaptável.
+                        </p>
+
+                        <div class="flex items-center gap-4 mt-auto">
+                            <button class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all">
+                                Adicionar <i data-lucide="plus" class="w-4 h-4"></i>
+                            </button>
+                            <a href="#" class="text-sm font-medium hover:text-white transition-colors">Documentação</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card KLauncher -->
+                <div class="tilt-card ripple-container group bg-surface-200 rounded-[2.5rem] p-8 md:p-12 border border-white/5 hover:border-accent/50 relative overflow-hidden cursor-pointer h-full">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="tilt-content relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-8">
+                            <div class="w-16 h-16 bg-surface-300 rounded-2xl flex items-center justify-center text-accent group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                <i data-lucide="monitor-smartphone" class="w-8 h-8"></i>
+                            </div>
+                            <span class="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full border border-accent/20">WINDOWS</span>
+                        </div>
+                        
+                        <h3 class="font-display text-3xl font-bold mb-4">KLauncher</h3>
+                        <p class="text-gray-400 mb-8 flex-grow">
+                            Transforme seu Windows com a estética Material You. Cores dinâmicas extraídas do wallpaper, widgets flutuantes e menu iniciar reinventado.
+                        </p>
+
+                        <div class="flex items-center gap-4 mt-auto">
+                            <button class="bg-accent text-surface-100 px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 hover:brightness-110 transition-all">
+                                Download <i data-lucide="download" class="w-4 h-4"></i>
+                            </button>
+                            <span class="text-xs text-gray-500">v2.1.0 Stable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DKSocial Section (Scroll Horizontal / Destaque) -->
+    <section id="dksocial" class="py-24 bg-surface-100 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute right-0 top-1/4 w-[800px] h-[800px] bg-gradient-to-b from-primary/10 to-transparent rounded-full blur-3xl -z-10"></div>
+
+        <div class="container mx-auto px-6">
+            <div class="bg-gradient-to-r from-surface-200 to-surface-300 rounded-[3rem] p-1 border border-white/5 shadow-2xl reveal">
+                <div class="bg-surface-100/50 backdrop-blur-sm rounded-[2.8rem] overflow-hidden flex flex-col lg:flex-row">
+                    
+                    <!-- Content -->
+                    <div class="lg:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center animate-pulse">
+                                <i data-lucide="radio" class="w-5 h-5"></i>
+                            </div>
+                            <span class="font-display font-bold text-xl">DKSocial</span>
+                        </div>
+
+                        <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                            Vídeos curtos.<br>
+                            <span class="text-primary">Conexões reais.</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg mb-8">
+                            A rede social central do ecossistema. Feed limpo, sem algoritmos viciantes, focado em criadores.
+                        </p>
+
+                        <div class="flex gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white">10k+</div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wide">Users</div>
+                            </div>
+                            <div class="w-px bg-white/10"></div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-white">Multi</div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wide">Plat</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Mockup -->
+                    <div class="lg:w-1/2 min-h-[400px] relative bg-surface-200 flex items-center justify-center p-8 group cursor-pointer" onclick="toggleLike(this)">
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface-100 via-surface-100/50 to-transparent"></div>
+                        
+                        <!-- Phone UI -->
+                        <div class="relative w-64 aspect-[9/18] border-4 border-surface-300 rounded-[2rem] shadow-2xl overflow-hidden bg-black">
+                            <!-- Video Content Simulate -->
+                            <div class="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                                <i data-lucide="play" class="w-12 h-12 text-white/50 fill-white"></i>
+                            </div>
+                            
+                            <!-- Overlay UI -->
+                            <div class="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/90 to-transparent">
+                                <div class="flex flex-col gap-2">
+                                    <div class="w-3/4 h-3 bg-gray-500/50 rounded-full"></div>
+                                    <div class="w-1/2 h-3 bg-gray-500/50 rounded-full"></div>
+                                </div>
+                                <div class="flex justify-between items-center mt-4">
+                                    <div class="flex gap-3">
+                                        <i id="like-icon" data-lucide="heart" class="w-6 h-6 text-white transition-colors"></i>
+                                        <i data-lucide="message-circle" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <i data-lucide="share-2" class="w-6 h-6 text-white"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Heart Animation on Click -->
+                            <i id="big-heart" data-lucide="heart" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-0 h-0 text-red-500 fill-red-500 transition-all duration-300"></i>
+                        </div>
+                        
+                        <div class="absolute bottom-8 text-sm text-gray-400 animate-bounce">
+                            Toque para interagir
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 text-center">
+        <h2 class="font-display text-3xl font-bold mb-8">Construído com Tecnologia Moderna</h2>
+        <div class="flex flex-wrap justify-center gap-4 opacity-70">
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Tailwind CSS</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Groq AI</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Electron</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Node.js</span>
+            <span class="px-4 py-2 bg-surface-200 rounded-lg border border-white/5 text-sm">Material Design 3</span>
+        </div>
+    </section>
+
+    <!-- Bottom Navigation Bar (Material You Mobile) -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-surface-200/95 backdrop-blur-xl border-t border-white/5 z-50 pb-safe">
+        <div class="flex justify-around items-center h-20 px-2">
+            
+            <a href="#home" class="nav-item active flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
+                <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
+                    <i data-lucide="home" class="w-5 h-5 min-w-[20px]"></i>
+                </div>
+                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Início</span>
+            </a>
+
+            <a href="#apps" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
+                <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
+                    <i data-lucide="grid" class="w-5 h-5 min-w-[20px]"></i>
+                </div>
+                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Apps</span>
+            </a>
+
+            <a href="#dksocial" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
+                <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
+                    <i data-lucide="heart" class="w-5 h-5 min-w-[20px]"></i>
+                </div>
+                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Social</span>
+            </a>
+
+            <a href="#about" class="nav-item flex flex-col items-center justify-center w-full h-full gap-1 group" onclick="setActiveNav(this)">
+                <div class="nav-indicator h-8 w-0 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden">
+                    <i data-lucide="info" class="w-5 h-5 min-w-[20px]"></i>
+                </div>
+                <span class="text-[10px] font-medium text-gray-400 group-[.active]:text-gray-200 transition-colors">Sobre</span>
+            </a>
+
+        </div>
+    </nav>
+
+    <!-- Footer Space for Mobile -->
+    <div class="h-20 md:hidden"></div>
+
+    <script>
+        // Inicializar ícones
+        lucide.createIcons();
+
+        // 1. RIPPLE EFFECT LOGIC
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+            circle.classList.add("ripple");
+
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+
+            button.appendChild(circle);
+        }
+
+        const buttons = document.querySelectorAll('.ripple-container');
+        for (const button of buttons) {
+            button.addEventListener('click', createRipple);
+        }
+
+        // 2. BOTTOM NAV ACTIVE LOGIC & SCROLL SPY
+        const sections = document.querySelectorAll('section');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function setActiveNav(element) {
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                // Reset icon color
+                const icon = item.querySelector('i');
+                if(icon) icon.style.color = '';
+            });
+            element.classList.add('active');
+        }
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').includes(current)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Scroll Reveal
+            const reveals = document.querySelectorAll(".reveal");
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        });
+
+        // 3. TILT EFFECT FOR CARDS
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -5; // Invertido para tilt correto
+                const rotateY = ((x - centerX) / centerX) * 5;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            });
+        });
+
+        // 4. PARALLAX MOUSE
+        document.addEventListener('mousemove', (e) => {
+            const blob1 = document.getElementById('blob1');
+            const blob2 = document.getElementById('blob2');
+            
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            blob1.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+            blob2.style.transform = `translate(${-x * 50}px, ${-y * 50}px)`;
+        });
+
+        // 5. INTERACTIVE MOCKUP
+        function toggleLike(element) {
+            const likeIcon = element.querySelector('#like-icon');
+            const bigHeart = element.querySelector('#big-heart');
+            
+            // Toggle colors
+            if (likeIcon.classList.contains('text-red-500')) {
+                likeIcon.classList.remove('text-red-500', 'fill-red-500');
+                likeIcon.classList.add('text-white');
+            } else {
+                likeIcon.classList.remove('text-white');
+                likeIcon.classList.add('text-red-500', 'fill-red-500');
+                
+                // Animate big heart
+                bigHeart.classList.remove('w-0', 'h-0');
+                bigHeart.classList.add('w-24', 'h-24', 'opacity-100');
+                
+                setTimeout(() => {
+                    bigHeart.classList.remove('w-24', 'h-24', 'opacity-100');
+                    bigHeart.classList.add('w-0', 'h-0', 'opacity-0');
+                }, 600);
+            }
+        }
+        
+        // Trigger initial reveal
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>
+
+
